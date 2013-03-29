@@ -28,9 +28,8 @@
         (drop-last default-values)
         body))))
 
-(defmacro defargs [name args body]
+(defmacro defargs [name args & body]
   (let [full-args (apply getfull-args (partition 2 args))
-        full-values (apply getfull-values (partition 2 args))]
-    `~(concat [`defn] [name] (get-function-body full-args [] full-args [] full-values body))))
-
-;(macroexpand-1 '(defargs sum [a 1 b 2 c 3] (+ a (+ b c))))
+        full-values (apply getfull-values (partition 2 args))
+        new-body (concat [`do] body)]
+    `~(concat [`defn] [name] (get-function-body full-args [] full-args [] full-values new-body))))
