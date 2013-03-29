@@ -19,12 +19,20 @@
     [key]
     (concat [key] (apply getfull-args args))))
 
-(defmacro defargs [name args body]
-  (let [full-args (apply getfull-args (partition 2 args))]
-    `(defn ~name 
-       (~(vec full-args) ~body)
+(defn getfull-values [[key value] & args]
+  (if (nil? args) 
+    [value]
+    (concat [value] (apply getfull-args args))))
 
-       )))
+(defn get-compositions [full-args body]
+     `(~(vec full-args) ~body)
+  )
+
+(defmacro defargs [name args body]
+  (let [full-args (apply getfull-args (partition 2 args))
+        full-values (apply getfull-values (partition 2 args))]
+    `(defn ~name 
+       ~(get-compositions full-args body))))
 
 (macroexpand-1 '(defargs sum [a 1 b 2](+ a b)))
 
