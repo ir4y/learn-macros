@@ -21,14 +21,16 @@
     (concat
       [(get-compositions args use-args use-values body)]
       (get-function-body 
-        (rest args)
-        (concat use-args [(first default-args)])
-        (rest default-args)
-        (concat use-values [(first default-values)])
-        (rest default-values)
+        (drop-last args)
+        (concat use-args [(last default-args)])
+        (drop-last default-args)
+        (concat use-values [(last default-values)])
+        (drop-last default-values)
         body))))
 
 (defmacro defargs [name args body]
   (let [full-args (apply getfull-args (partition 2 args))
         full-values (apply getfull-values (partition 2 args))]
     `~(concat [`defn] [name] (get-function-body full-args [] full-args [] full-values body))))
+
+;(macroexpand-1 '(defargs sum [a 1 b 2 c 3] (+ a (+ b c))))
