@@ -1,6 +1,6 @@
 (ns learn-macros.defargs)
 
-(defn get-compositions [args default-values body]
+(defn get-pattern [args default-values body]
   "Create function's pattern for args
   Wrap function body with let expression if default-values is present" 
   (if (= default-values [])
@@ -10,9 +10,9 @@
 (defn get-function-body [args default-values using-values body]
   "Walk through args and create pattern for each argument's set" 
   (if (= args '())
-    [(get-compositions args using-values body)]  ; return final patter for empty argument list
+    [(get-pattern args using-values body)]  ; return final patter for empty argument list
     (concat
-      [(get-compositions args using-values body)]  ; pattern for curent arguments set
+      [(get-pattern args using-values body)]  ; pattern for curent arguments set
       (get-function-body 
         (drop-last args)  ; remove last argument
         (drop-last 2 default-values)  ; remove last value
