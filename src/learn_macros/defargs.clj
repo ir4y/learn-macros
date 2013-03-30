@@ -31,5 +31,5 @@
 (defmacro defargs [name args & body]
   (let [full-args (apply getfull-args (partition 2 args))
         full-values (apply getfull-values (partition 2 args))
-        new-body (concat [`do] body)]
-    `~(concat [`defn] [name] (get-function-body full-args [] full-args [] full-values new-body))))
+        new-body `(do ~@body)]
+    `(defn ~name ~@(get-function-body full-args [] full-args [] full-values new-body))))
