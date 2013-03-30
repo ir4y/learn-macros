@@ -1,10 +1,5 @@
 (ns learn-macros.defargs)
 
-(defn getfull-args [[key value] & args]
-  (if (nil? args) 
-    [key]
-    (concat [key] (apply getfull-args args))))
-
 (defn get-compositions [args default-args body]
   (if (= default-args [])
      `(~(vec args) ~@body)
@@ -22,5 +17,4 @@
         body))))
 
 (defmacro defargs [name args & body]
-  (let [full-args (apply getfull-args (partition 2 args))]
-        `(defn ~name ~@(get-function-body full-args args [] body))))
+        `(defn ~name ~@(get-function-body (take-nth 2 args) args [] body)))
