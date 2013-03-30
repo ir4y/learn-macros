@@ -5,31 +5,25 @@
     [key]
     (concat [key] (apply getfull-args args))))
 
-(defn getfull-values [[key value] & args]
-  (if (nil? args) 
-    [value]
-    (concat [value] (apply getfull-values args))))
-
-(defn get-compositions [args default-args default-values body]
+(defn get-compositions [args default-args body]
   (if (= default-args [])
      `(~(vec args) ~body)
-     `(~(vec args) (let ~(vec (interleave default-args default-values)) ~body))))
+     `(~(vec args) (let ~(vec (flatten default-args)) ~body))))
 
-(defn get-function-body [args use-args default-args use-values default-values body]
+(defn get-function-body [args default-args use-args body]
   (if (= args '())
-    [(get-compositions args use-args use-values body)]
+    [(get-compositions args use-args body)]
     (concat
-      [(get-compositions args use-args use-values body)]
+      [(get-compositions args use-args body)]
       (get-function-body 
         (drop-last args)
-        (concat use-args [(last default-args)])
-        (drop-last default-args)
-        (concat use-values [(last default-values)])
-        (drop-last default-values)
+        (drop-last 2 default-args)
+        (concat use-args [(take-last 2 default-args)])
         body))))
 
 (defmacro defargs [name args & body]
   (let [full-args (apply getfull-args (partition 2 args))
-        full-values (apply getfull-values (partition 2 args))
         new-body `(do ~@body)]
-    `(defn ~name ~@(get-function-body full-args [] full-args [] full-values new-body))))
+        `(defn ~name ~@(get-function-body full-args args [] new-body))))
+(macroexpand-1 '(defargs sum [a 1 b 2 c 3] (+ a (+ b c))))
+
