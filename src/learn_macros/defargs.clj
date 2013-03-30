@@ -7,8 +7,8 @@
 
 (defn get-compositions [args default-args body]
   (if (= default-args [])
-     `(~(vec args) ~body)
-     `(~(vec args) (let ~(vec (flatten default-args)) ~body))))
+     `(~(vec args) ~@body)
+     `(~(vec args) (let ~(vec (flatten default-args)) ~@body))))
 
 (defn get-function-body [args default-args use-args body]
   (if (= args '())
@@ -23,4 +23,4 @@
 
 (defmacro defargs [name args & body]
   (let [full-args (apply getfull-args (partition 2 args))]
-        `(defn ~name ~@(get-function-body full-args args [] `(do ~@body)))))
+        `(defn ~name ~@(get-function-body full-args args [] body))))
