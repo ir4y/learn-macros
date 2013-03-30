@@ -5,15 +5,15 @@
      `(~(vec args) ~@body)
      `(~(vec args) (let ~(vec (flatten default-values)) ~@body))))
 
-(defn get-function-body [args default-values use-args body]
+(defn get-function-body [args default-values using-values body]
   (if (= args '())
-    [(get-compositions args use-args body)]
+    [(get-compositions args using-values body)]
     (concat
-      [(get-compositions args use-args body)]
+      [(get-compositions args using-values body)]
       (get-function-body 
         (drop-last args)
         (drop-last 2 default-values)
-        (concat use-args [(take-last 2 default-values)])
+        (concat using-values [(take-last 2 default-values)])
         body))))
 
 (defmacro defargs [name args & body]
