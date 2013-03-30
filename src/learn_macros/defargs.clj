@@ -22,8 +22,5 @@
         body))))
 
 (defmacro defargs [name args & body]
-  (let [full-args (apply getfull-args (partition 2 args))
-        new-body `(do ~@body)]
-        `(defn ~name ~@(get-function-body full-args args [] new-body))))
-(macroexpand-1 '(defargs sum [a 1 b 2 c 3] (+ a (+ b c))))
-
+  (let [full-args (apply getfull-args (partition 2 args))]
+        `(defn ~name ~@(get-function-body full-args args [] `(do ~@body)))))
