@@ -17,6 +17,12 @@
 
 (infix 1 + 2 + 3)
 
+(defmacro defrpc [[fun & args]]
+  (let [edn (gensym "edn")]
+    `(fn [~edn]
+       (~fun ~@(for [arg args] `(~edn ~(keyword arg)))))))
 
-(defn -main []
-  (println"Hello, World!"))
+((defrpc (+ a b)) {:a 1 :b 2})
+
+(defn -main [& args]
+  (println "Hello, World!"))
